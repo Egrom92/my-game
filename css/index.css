@@ -1,0 +1,29 @@
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #529aed;
+    background-image: url('../img/index-bg.png');
+    background-size: cover;
+    background-position: center;
+    padding: 0;
+}
+.wrapper {
+
+}
+
+h1{
+    font-family: 'MontserratExtraBold', sans-serif;
+    font-size: 192px;
+    line-height: 162px;
+    margin: 0;
+    text-transform: uppercase;
+    max-width: 576px;
+    width: 100%;
+    background: -webkit-linear-gradient(0deg, rgba(255,1,252,1) 0%, rgba(150,71,229,1) 51%, rgba(42,10,204,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
