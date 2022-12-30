@@ -1,0 +1,11 @@
+.btn {
+    font-family: 'MontserratSemiBold', sans-serif;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(90deg, rgba(255,1,252,.7) 0%, rgba(150,71,229,.7) 51%, rgba(42,10,204,.7) 100%);
+    min-width: 225px;
+    padding: 16px 30px;
+    border: none;
+    text-decoration: none;
+    text-align: center;
+}

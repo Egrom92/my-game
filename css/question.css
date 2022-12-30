@@ -1,0 +1,109 @@
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    background-color: #529aed;
+    background-image: url('../img/table-bg.png');
+    background-size: cover;
+    background-position: center;
+    padding: 0;
+}
+
+.header {
+    width: calc(100vw - 20px);
+    max-width: 1381px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 50px;
+    align-items: center;
+}
+
+.gamer {
+    margin: 0;
+    font-family: 'MontserratExtraBold', sans-serif;
+    font-size: 80px;
+    color: #fff;
+}
+.gamer__action {
+
+}
+.gamer__name {
+
+}
+.parameters {
+    margin: 0;
+    font-family: 'MontserratSemiBold', sans-serif;
+    text-transform: uppercase;
+    font-size: 40px;
+    color: #fff;
+}
+.parameters__category {
+
+}
+.parameters__points {
+    margin-left: 50px;
+}
+.game {
+    width: calc(100vw - 20px);
+    box-sizing: border-box;
+    max-width: 1381px;
+    background-color: rgb(255 255 255 / 20%);
+    padding: 50px;
+}
+.game__time {
+
+}
+.game__question {
+    margin: 0 0 30px;
+    font-family: 'MontserratSemiBold', sans-serif;
+    color: #fff;
+    font-size: 37px;
+}
+.game__answer {
+    margin: 0 0 30px;
+    color: rgba(42,10,204,1);
+    font-family: 'MontserratSemiBold', sans-serif;
+    font-size: 60px;
+}
+.game__actions {
+
+}
+.game__start {
+    display: flex;
+    align-items: center;
+}
+.game__start.disable{
+    display: none;
+}
+.game__show-answer {
+
+}
+.game__end-time {
+    margin-left: 30px;
+    font-family: 'MontserratSemiBold', sans-serif;
+    text-transform: uppercase;
+    font-size: 40px;
+    color: #FC003C;
+}
+.game__result {
+    display: flex;
+}
+.game__result.disable{
+    display: none;
+}
+.game__result .btn:not(:last-child) {
+    margin-right: 30px;
+}
+
+.game__incorrect-answer {
+
+}
+.game__win-player {
+
+}
+.game__win-spectators {
+
+}
