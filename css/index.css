@@ -2,17 +2,26 @@ body {
     margin: 0;
     width: 100vw;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: #529aed;
-    background-image: url('../img/index-bg.png');
     background-size: cover;
     background-position: center;
     padding: 0;
 }
+
+body.start-state {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    background-image: url('../img/index-bg.png');
+}
+
 .wrapper {
     text-decoration: none;
+    display: none;
+}
+
+body.start-state .wrapper{
+    display: inline-block;
 }
 
 h1{

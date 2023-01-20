@@ -5,16 +5,66 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Моя игра</title>
+    <title>Своя игра</title>
 
     <link rel="stylesheet" href="fonts/stylesheet.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/table.css">
+    <link rel="stylesheet" href="css/players.css">
+    <link rel="stylesheet" href="css/question.css">
+    <link rel="stylesheet" href="css/btn.css">
 </head>
-<body>
+<body class="start-state">
 
-<a href="table.html" class="wrapper">
+
+<span onclick="startGame()" class="wrapper">
     <h1>Своя игра</h1>
-</a>
+</span>
 
+
+
+<div class="game-wrapper">
+    <div class="reset" onclick="reset()">Reset</div>
+    <ul class="players"></ul>
+
+    <div class="table"></div>
+
+    <div class="question disabled">
+        <div class="header">
+            <h2 class="gamer">
+                <span class="gamer__action">Играет</span>
+                <span class="gamer__name">Дуся</span>
+            </h2>
+
+            <h2 class="parameters">
+                <span class="parameters__category">Библия</span>
+                <span class="parameters__points">100</span>
+            </h2>
+        </div>
+
+
+        <div class="game">
+            <div class="game__time"></div>
+            <h3 class="game__question">От этого животного во многом зависела военная мощь империи.</h3>
+            <h4 class="game__answer hide">Конь</h4>
+
+            <div class="game__actions ">
+                <div class="game__start">
+                    <button class="game__show-answer btn" onclick="showAnswer()">Показать ответ</button>
+                    <span class="game__end-time hide">Время вышло</span>
+                </div>
+                <div class="game__result disable">
+                    <button class="game__incorrect-answer btn" onclick="playerLoose()">Не правильно</button>
+                    <button class="game__win-player btn" onclick="playerWin()">Молодец Дуся</button>
+                    <button class="game__win-spectators btn" onclick="audienceWin()">Молодец Зал</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery-3.6.0.js"></script>
+<script src="js/data.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>

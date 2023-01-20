@@ -1,201 +1,279 @@
-
 let myData;
 let downloadTimer;
-let players;
+let players = [];
 let currentPlayerIndex = -1;
 let currentQuestion;
-let audienceScore = 0;
-let timeLimit = 30;
-let questionCounter = 0;
-let audienceName = "Зал";
+let audience = {name: "Зал", id: "audience", score: 0};
+let timeLimit = 5;
+let timerDelay = 1000 // 1s
+let questionCounter = localStorage.getItem("questionCounter") ? JSON.parse(localStorage.getItem("questionCounter")) : 0;
 let audienceFinish = 0;
 
-function createDataTest(){
-  myData = DataTest
+const body = document.querySelector('body')
+
+function createData() {
+  const startData = Detail
+  // const startData = DataTest
+  // const startData = TestDetail
+  // const startData = TestData
+  const savedData = localStorage.getItem("myData")
+  myData = savedData ? JSON.parse(savedData) : startData
 };
 
-function createData1(){
-  myData = Detail
+function createPlayer(currentValue, index) {
+  return {name: currentValue.trim(), id: "p" + index++, score: 0};
 };
 
-function createData2(){
-  myData = Data2;
+function createPlayers() {
+  const savedPlayers = localStorage.getItem("players")
+  const savedAudience = localStorage.getItem("audience")
+  if (!savedPlayers) {
+    let playerList = prompt("Введите ВСЕ имена через запятую", "Игрок1, Игрок2, Игрок3");
+
+    let array = playerList.split(',');
+    let index = 0;
+    players = array.map(x => createPlayer(x, index++));
+  } else {
+    players = JSON.parse(savedPlayers)
+  }
+
+  if (savedAudience) {
+    audience = JSON.parse(savedAudience)
+  }
 };
 
-function createPlayer(currentValue, index){
-  let item = {name:currentValue.trim(), id: "p" + index++, score:0};
-  return item;
-};
-
-function createPlayers(){
-  let playerList = prompt("Введите ВСЕ имена через запятую", "Игрок1, Игрок2, Игрок3");
-
-  let array = playerList.split(',');
-  let index = 0;
-  players = array.map(x => createPlayer(x, index++));
-};
-
-function finishForAudience(counter){
+function finishForAudience(counter) {
   return myData.questions.length - counter < players.length;
 };
 
-function gameOver(counter){
+function gameOver(counter) {
+  console.log('counter ----', counter);
+  console.log('myData.questions.length ----', myData.questions.length);
+  console.log('myData.questions.length - counter === 0 ----', myData.questions.length - counter === 0);
   return myData.questions.length - counter === 0;
 };
 
-function selectNextPlayer(){
-  if (currentPlayerIndex === players.length-1)
-    currentPlayerIndex = -1;
-
+function selectNextPlayer() {
+  if (currentPlayerIndex === players.length - 1)
+  currentPlayerIndex = -1;
   let player = players[++currentPlayerIndex].name;
 
-  if (currentPlayerIndex === 0 && finishForAudience(questionCounter)){
+  if (currentPlayerIndex === 0 && finishForAudience(questionCounter)) {
     audienceFinish = 1;
   }
 
-  if (audienceFinish === 1){
-    player = audienceName;
+  if (audienceFinish === 1) {
+    player = audience.name;
   }
+  const $gamer__name = $(".gamer__name")[0]
+  $gamer__name.innerHTML = player + "!";
+  $(".game__win-player")[0].innerHTML = "Молодец, " + player + "!";
 
-  $("#playerToReply")[0].innerHTML = "Играет " + player + "!";
-  $("#playerWin")[0].innerHTML = "Молодец, " + player + "!";
-  if (gameOver(questionCounter)){
-    $("#playerToReply")[0].innerHTML = "Всё!";
+  if (gameOver(questionCounter)) {
+    $(".table").addClass('game-over');
   }
 };
 
-function startQuestion(id){
+function startQuestion(id) {
   questionCounter++;
+  console.log('questionCounter ----', questionCounter);
   currentQuestion = myData.questions.find(x => x.id === id);
+
   let category = myData.categories[currentQuestion.categoryId];
 
-  $("#questionText")[0].innerHTML = currentQuestion.question;
-  $("#answerText")[0].innerHTML = currentQuestion.answer;
-  $("#questionTitle")[0].innerHTML = "(" + category + " " + currentQuestion.questionValue + ")";
-
-  $("#currentQuestion").css('display', 'block');
-  $(".resultButton").css('display', 'none');
-  $("#showAnswer").css('display', 'block');
-  $("#answerText").css('display', 'none');
-  $("#timeIsUp").css('display', 'none');
-
-  $("#"+id).css("visibility", "hidden");
-  $("#gameTable").css("visibility", "hidden");
-  document.getElementById("pbar").value = timeLimit;
+  $(".game__question")[0].innerHTML = currentQuestion.question;
+  $(".game__answer")[0].innerHTML = currentQuestion.answer;
+  $(".parameters__category")[0].innerHTML = category;
+  $(".parameters__points")[0].innerHTML = currentQuestion.questionValue;
+  $(".question").removeClass('disabled');
+  $(".table").addClass('disabled');
   startCountdown();
 };
 
-function generateGameCell(currentValue){
-  let row = $("."+currentValue.categoryId)[0];
-  let cell = row.insertCell(-1);
-  let node = document.createElement("a");
-  node.href="#";
-  node.innerHTML = currentValue.questionValue;
-  node.id = currentValue.id;
-  cell.appendChild(node);
-  node.onclick = function(){
-    startQuestion(currentValue.id);
-  };
+function generateGameCell(currentValue) {
+  const currentRow = "#table__row-" + currentValue.categoryId + ">.table__points"
+  const gameCell = `<li onclick="startQuestion('${currentValue.id}')" class="table__point table__point-${currentValue.id} ${currentValue.disabled ? 'disabled' : ''}">${currentValue.questionValue}</li>`
+  $(currentRow).append(gameCell);
 };
 
-function generateGameRow(currentValue, index){
-  let table = $("#gameTable")[0];
-  let node = document.createElement("th");
-  node.innerHTML = currentValue;
-  rowToAdd = table.insertRow(-1);
-  rowToAdd.appendChild(node);
-  rowToAdd.classList.add(index);
+function generateGameRow(currentValue, index) {
+  const gameRowHTML = `<div id="table__row-${index}" class="table__row"><h2 class="table__category">${currentValue}</h2><ul class="table__points"></ul></div>`
+  $(".table").append(gameRowHTML);
 };
 
-function timeIsUp(){
-  $("#timeIsUp").css('display', 'block');
+function timeIsUp() {
+  setTimeout(() => {
+    $(".game__end-time").removeClass('hide');
+  }, timerDelay)
 };
 
-function startCountdown(){
-  let reverseCounter = timeLimit;
-  downloadTimer = setInterval(function(){
-    document.getElementById("pbar").value = --reverseCounter;
-    if(reverseCounter <= 0){
+function startCountdown() {
+  let reverseCounter = 100;
+  const interval = 100 / timeLimit;
+  const $gameTime = $('.game__time')
+  $gameTime.css('transition-duration', (timerDelay / 1000) + 's')
+  $gameTime.css('width', (reverseCounter) + '%')
+
+  setTimeout(() => {
+    $gameTime.css('width', (reverseCounter -= interval) + '%')
+  }, 0)
+
+  downloadTimer = setInterval(function () {
+    $gameTime.css('width', (reverseCounter -= interval) + '%')
+    if (reverseCounter <= 0) {
       clearInterval(downloadTimer);
       timeIsUp();
     }
-  },1000);
+  }, timerDelay)
 };
 
-function stopCountdown(){
+function stopCountdown() {
+  const $gameTime = $('.game__time')
+  $gameTime.css('width', $gameTime.width())
   clearInterval(downloadTimer);
 };
 
-function finalizeQuestion(){
-  $("#currentQuestion").css('display', 'none');
-  $("#answerText").css('display', 'none');
-  $("#gameTable").css("visibility", "visible");
+function finalizeQuestion() {
+  $('.question').addClass('disabled');
+  $('.table').removeClass('disabled');
+
+  $(".game__answer").addClass('hide');
+  $(".game__end-time").addClass('hide');
+  $(".game__result").addClass('disable');
+  $(".game__start").removeClass('disable');
+
   selectNextPlayer();
-};
+}
 
-function showAnswer(){
+function showAnswer() {
   stopCountdown();
-  $("#showAnswer").css('display', 'none');
-  $(".resultButton").css('display', 'block');
-  if (audienceFinish > 0){
-    $("#playerWin").css('display', 'none');
+  $(".game__result").removeClass('disable');
+  $(".game__start").addClass('disable');
+  $(".game__answer").removeClass('hide');
+  $(".table__point-" + currentQuestion.id).addClass('disabled')
+
+  if (audienceFinish > 0) {
+    $(".game__win-player").css('display', 'none');
   }
-  $("#answerText").css('display', 'block');
+
+  currentQuestion.disabled = true
+  saveDataToLocalStorage()
 };
 
-function playerWin(){
+function playerWin() {
   let player = players[currentPlayerIndex];
   player.score += currentQuestion.questionValue;
-  $("#"+player.id)[0].innerHTML = player.score;
+
+  const gamer = $(`#${player.name} > span`)
+  gamer.text(player.score)
+
+  saveDataToLocalStorage()
   finalizeQuestion();
 };
 
-function playerLoose(){
+function playerLoose() {
   finalizeQuestion();
 };
 
-function audienceWin(){
-  audienceScore += currentQuestion.questionValue;
-  $("#audienceScore")[0].innerHTML = audienceScore;
+function audienceWin() {
+  audience.score += currentQuestion.questionValue;
+  $(`#${audience.id} > span`)[0].innerHTML = audience.score;
+  saveDataToLocalStorage()
   finalizeQuestion();
 };
 
-function createScoreTable(){
-  let table = $("#players")[0];
-  let rowNames = table.createTHead().insertRow(0);
-  players.forEach(function(currentValue){
-    let cell = rowNames.insertCell(-1);
-    cell.innerHTML = currentValue.name;
+function createScoreTable() {
+  const gamersWrap = $(".players")
+  //Добавил всех игроков в таблицу
+  players.forEach(player => {
+    gamersWrap.append(`<li id="${player.name}"><h3>${player.name}</h3> <span>${player.score}</span> </li>`)
+  })
+
+  const gamers = $(".players > li")
+  gamers.each(index => {
+    gamers[index].addEventListener('click', e => {
+      changePlayerScore(e, index)
+    });
+  })
+  //Добавил зал в таблицу
+  gamersWrap.append(`<li id="${audience.id}"><h3>${audience.name}</h3> <span>${audience.score}</span> </li>`);
+
+  const $audience = $(`#${audience.id}`)[0]
+  $audience.addEventListener('click', e => {
+    changePlayerScore(e)
   });
-
-  let rowScores = table.insertRow(-1);
-  players.forEach(function(currentValue){
-    let cell = rowScores.insertCell(-1);
-    cell.innerHTML = currentValue.score;
-    cell.id = currentValue.id;
-  });
-
-  rowNames.insertCell(-1).innerHTML = audienceName;
-  let tmp = rowScores.insertCell(-1);
-  tmp.innerHTML = audienceScore;
-  tmp.id = "audienceScore";
 };
 
-function startGame(){
+function startGame() {
   createPlayers();
+  body.classList.remove('start-state')
+  body.classList.add('play-state')
   createScoreTable();
   selectNextPlayer();
-  $("#playersDiv").css('visibility', 'visible');
-  $("#gameTable").css('visibility', 'visible');
-  $("#gameRules").css('display', 'none');
-
 };
 
-$(document).ready(function(){
-  //createDataTest();
-  createData1();
-  //createData2();
+$(document).ready(function () {
+  createData();
+
   myData.categories.forEach(generateGameRow);
   myData.questions.forEach(generateGameCell);
-  document.getElementById("pbar").max = timeLimit;
 });
+
+const editGameHandler = () => {
+  const $gameSettings = document.querySelector('.game-settings')
+  $gameSettings.innerHTML = 'Save'
+  const $players = $('.players > li')
+
+  $gameSettings.removeEventListener('click', editGameHandler)
+  $gameSettings.addEventListener('click', () => {
+    $players.each(function (index) {
+      $players[index].removeEventListener('click', changePlayerScore)
+    })
+  })
+
+  $players.each(function (index) {
+    $players[index].addEventListener('click', e => {
+      changePlayerScore(e, index)
+    })
+  });
+}
+
+const changePlayerScore = (e, index) => {
+  let score
+  let player = index ? players[index] : audience;
+  let playerID = index ? player.name : player.id;
+
+  const askNewScore = () => {
+    score = prompt("Введите новый счёт", player.score)
+  };
+
+  askNewScore()
+
+  if (isNaN(score)) {
+    return askNewScore()
+  }
+
+  player.score = +score;
+
+  const gamer = $(`#${playerID} > span`)
+  gamer.text(player.score)
+  saveDataToLocalStorage()
+}
+const saveDataToLocalStorage = () => {
+  localStorage.setItem("players", JSON.stringify(players))
+  localStorage.setItem("myData", JSON.stringify(myData))
+  localStorage.setItem("audience", JSON.stringify(audience))
+  localStorage.setItem("questionCounter", JSON.stringify(questionCounter))
+}
+
+const reset = () => {
+  const localStorageKeys = ['questionCounter', 'audience', 'myData', 'players']
+
+  localStorageKeys.forEach(key => {
+    if (localStorage.getItem(key)) {
+      localStorage.removeItem(key);
+    }
+  })
+
+  document.location.reload()
+}

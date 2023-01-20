@@ -1,23 +1,26 @@
-body {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-    align-items: center;
-    background-color: #529aed;
+body.play-state {
     background-image: url('../img/table-bg.png');
-    background-size: cover;
-    background-position: center;
-    padding: 0;
 }
 
-
+body.play-state .game-wrapper{
+    display: flex;
+}
+.game-wrapper {
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: relative;
+}
 .table {
     width: calc(100vw - 20px);
     box-sizing: border-box;
     max-width: 1381px;
     position: relative;
+}
+.table.disabled {
+    display: none;
 }
 .table:after {
     content: '';
@@ -29,6 +32,26 @@ body {
     background: linear-gradient(90deg, rgba(255,1,252,1) 0%, rgba(150,71,229,1) 51%, rgba(42,10,204,1) 100%);
     z-index: -1;
 }
+.table:before {
+    content: 'Всё!';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0 0 0 / 46%);
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    left: 0;
+    bottom: 0;
+    font-family: 'MontserratExtraBold', sans-serif;
+    font-size: 50px;
+}
+.table.game-over:before {
+    display: flex;
+}
+
 .table__row {
     display: flex;
     align-content: center;
@@ -56,35 +79,53 @@ body {
     padding: 0;
 }
 .table__point {
-    display: block;
+    display: flex;
     width: 100%;
-    height: 100%;
-}
-.table__point a {
     height: 100%;
     text-decoration: none;
     background-color: #5598e9;
-    width: 100%;
     margin: 0;
     font-family: 'MontserratExtraBold', sans-serif;
-    display: flex;
     align-items: center;
     justify-content: center;
     font-size: 27px;
     color: #02128E;
     transition: all 0.3s ease-out;
+    cursor: pointer;
 }
+
 .table__point:not(:last-child) {
     margin-right: 5px;
 }
 
-.table__point a:hover {
+.table__point:hover {
     color: #fff;
     background-color: transparent;
 }
 
-.table__point.disabled a {
+.table__point.disabled {
     color: rgb(255 255 255 / 20%);
     background-color: #5598e9;
     pointer-events: none;
+}
+.reset {
+    font-family: 'MontserratExtraBold', sans-serif;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    color: white;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all ease-out .3s;
+    bottom: 0;
+    left: 0;
+    background-color: rgb(0 0 0 / 20%);
+    padding: 10px;
+}
+.reset:hover {
+    opacity: .5;
 }
