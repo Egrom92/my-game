@@ -4,7 +4,7 @@ let players = [];
 let currentPlayerIndex = -1;
 let currentQuestion;
 let audience = {name: "Зал", id: "audience", score: 0};
-let timeLimit = 5;
+let timeLimit = 30;
 let timerDelay = 1000 // 1s
 let questionCounter = localStorage.getItem("questionCounter") ? JSON.parse(localStorage.getItem("questionCounter")) : 0;
 let audienceFinish = 0;
@@ -12,8 +12,8 @@ let audienceFinish = 0;
 const body = document.querySelector('body')
 
 function createData() {
-  const startData = Detail
-  // const startData = DataTest
+  // const startData = Detail
+  const startData = DataTest
   // const startData = TestDetail
   // const startData = TestData
   const savedData = localStorage.getItem("myData")
@@ -47,9 +47,6 @@ function finishForAudience(counter) {
 };
 
 function gameOver(counter) {
-  console.log('counter ----', counter);
-  console.log('myData.questions.length ----', myData.questions.length);
-  console.log('myData.questions.length - counter === 0 ----', myData.questions.length - counter === 0);
   return myData.questions.length - counter === 0;
 };
 
@@ -57,6 +54,7 @@ function selectNextPlayer() {
   if (currentPlayerIndex === players.length - 1)
   currentPlayerIndex = -1;
   let player = players[++currentPlayerIndex].name;
+  let $player = $(`#${player}`)
 
   if (currentPlayerIndex === 0 && finishForAudience(questionCounter)) {
     audienceFinish = 1;
@@ -64,19 +62,33 @@ function selectNextPlayer() {
 
   if (audienceFinish === 1) {
     player = audience.name;
+    $player = $(`#${audience.id}`)
   }
+
+  $('.players li').each(function() {
+    if($(this).hasClass('active')){
+      $(this).removeClass('active');
+    }
+  });
+
+  $player.addClass('active')
+
   const $gamer__name = $(".gamer__name")[0]
   $gamer__name.innerHTML = player + "!";
   $(".game__win-player")[0].innerHTML = "Молодец, " + player + "!";
 
   if (gameOver(questionCounter)) {
+    $('.players li').each(function() {
+      if($(this).hasClass('active')){
+        $(this).removeClass('active');
+      }
+    });
     $(".table").addClass('game-over');
   }
 };
 
 function startQuestion(id) {
   questionCounter++;
-  console.log('questionCounter ----', questionCounter);
   currentQuestion = myData.questions.find(x => x.id === id);
 
   let category = myData.categories[currentQuestion.categoryId];

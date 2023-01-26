@@ -1,6 +1,7 @@
 .players {
     margin: 0 auto 50px;
     display: flex;
+    align-items: flex-start;
     padding: 0;
 }
 .players li {
@@ -8,11 +9,20 @@
     flex-direction: column;
     align-items: center;
     width: 198px;
-    padding: 30px 0;
+    margin-bottom: 30px;
+    border-bottom: 3px transparent solid;
     background: linear-gradient(90deg, rgba(255,1,252,.2) 0%, rgba(150,71,229,.2) 51%, rgba(42,10,204,.2) 100%);
+    padding: 15px 0;
+    transition: ease-out all .3s;
 }
 .players li:not(:last-child) {
     margin-right: 50px;
+}
+
+.players .active {
+    border-bottom-color: #fa09fa;
+    padding: 30px 0;
+    margin-bottom: 0;
 }
 .players h3 {
     margin-top: 0;

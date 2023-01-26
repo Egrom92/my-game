@@ -18,10 +18,26 @@ body.start-state {
 .wrapper {
     text-decoration: none;
     display: none;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+.start-label {
+    font-size: 13px;
+    color: rgb(255 255 255);
+    margin-top: 30px;
+    font-family: 'MontserratExtraBold', sans-serif;
+    animation: blink 3s ease-out infinite;
+    pointer-events: none;
+}
+@keyframes blink {
+    0% { opacity: .4; }
+    50% { opacity: .1; }
+    100% { opacity: .4; }
 }
 
 body.start-state .wrapper{
-    display: inline-block;
+    display: flex;
 }
 
 h1{
@@ -35,4 +51,5 @@ h1{
     background: -webkit-linear-gradient(0deg, rgba(255,1,252,1) 0%, rgba(150,71,229,1) 51%, rgba(42,10,204,1) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    pointer-events: none;
 }
